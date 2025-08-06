@@ -9,6 +9,6 @@ const newsURL = "https://newsapi.org/v2/everything?q=stocks&sortBy=popularity&ap
 exports.getNews = async(req, res)=>{
     const response = await fetch(newsURL)
     const newsData = await response.json()
-    console.log(newsData);
+    // console.log(newsData);
     res.json(newsData)
 }
