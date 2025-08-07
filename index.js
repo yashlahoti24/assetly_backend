@@ -8,6 +8,9 @@ app.use(cors())
 const newsRoute = require("./routes/newsRoute")
 app.use('/news', newsRoute)
 
+const portfolioRoute = require('./routes/portfolioRoute');
+app.use('/portfolio', portfolioRoute)
+
 
 app.listen(8081, (err)=>{
     if(err)
