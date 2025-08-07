@@ -154,6 +154,46 @@ app.get("/sector-distribution", (req, res) => {
   });
 });
 
+// Route to fetch current month's total expense
+app.get("/current-expense", (req, res) => {
+  const stockQuery = `
+    SELECT SUM(AMOUNT) AS totalStocks 
+    FROM user_stocks 
+    WHERE MONTH(PURCHASE_DATE) = MONTH(CURRENT_DATE()) AND YEAR(PURCHASE_DATE) = YEAR(CURRENT_DATE())
+  `;
+
+  const goldQuery = `
+    SELECT SUM(AMOUNT) AS totalGold 
+    FROM user_gold 
+    WHERE MONTH(PURCHASE_DATE) = MONTH(CURRENT_DATE()) AND YEAR(PURCHASE_DATE) = YEAR(CURRENT_DATE())
+  `;
+
+  connection.query(stockQuery, (err, stockResults) => {
+    if (err) {
+      console.error("Error calculating total stock amount:", err);
+      return res.status(500).send("Error fetching stock amount");
+    }
+
+    connection.query(goldQuery, (err, goldResults) => {
+      if (err) {
+        console.error("Error calculating total gold amount:", err);
+        return res.status(500).send("Error fetching gold amount");
+      }
+
+      const totalStocks = stockResults[0].totalStocks || 0;
+      const totalGold = goldResults[0].totalGold || 0;
+      const totalExpense = totalStocks + totalGold;
+
+      res.json({ totalExpense });
+    });
+  });
+});
+
+
+
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+});
 
 
 
